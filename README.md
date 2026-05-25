@@ -5,5 +5,5 @@
 - Thomas Esteves  
 
 **Questions traitées**
-- Question 3 : Architecture en couches (Thomas Esteves)
-- Question 4 : DevOps / Architecture Microservices (Julien Larzul)
+- Question 3 : Architecture en couches (Julien Larzul)
+- Question 4 : DevOps / Architecture Microservices (Thomas Esteves)
