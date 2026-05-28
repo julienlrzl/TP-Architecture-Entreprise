@@ -1,0 +1,78 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Mise en contexte}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Objectif du travail}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Plan du document}{3}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Partie A --- Rôle de l'architecture Microservices}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Définition et origine}{4}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {2.1.1}Qu'est-ce qu'une architecture microservices~?}{4}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.1.2}Contexte historique}{4}{subsubsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.2}Principes fondamentaux}{4}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Décomposition par domaine métier}{4}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Indépendance des services}{5}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}Communication via API REST}{5}{subsubsection.2.2.3}%
+\contentsline {subsubsection}{\numberline {2.2.4}Déploiement indépendant}{5}{subsubsection.2.2.4}%
+\contentsline {subsubsection}{\numberline {2.2.5}Décentralisation des données}{5}{subsubsection.2.2.5}%
+\contentsline {subsection}{\numberline {2.3}Étapes du cycle de vie}{5}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Conception et découpage en services}{5}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}Développement indépendant}{5}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.3}Conteneurisation avec Docker}{6}{subsubsection.2.3.3}%
+\contentsline {subsubsection}{\numberline {2.3.4}Orchestration et déploiement}{6}{subsubsection.2.3.4}%
+\contentsline {subsubsection}{\numberline {2.3.5}Monitoring et observabilité}{6}{subsubsection.2.3.5}%
+\contentsline {subsection}{\numberline {2.4}Comparaison Monolithe vs Microservices}{6}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Partie B --- Application bancaire en microservices}{7}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Présentation de l'application}{7}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Description générale}{7}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Choix technologiques justifiés}{7}{subsubsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.2}Identification et description des microservices}{8}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Discovery Service (Eureka Server) --- Port 8761}{8}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}API Gateway (Spring Cloud Gateway) --- Port 8080}{8}{subsubsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.3}Auth Service --- Port 8081}{8}{subsubsection.3.2.3}%
+\contentsline {subsubsection}{\numberline {3.2.4}Account Service --- Port 8082}{9}{subsubsection.3.2.4}%
+\contentsline {subsubsection}{\numberline {3.2.5}Transaction Service --- Port 8083}{9}{subsubsection.3.2.5}%
+\contentsline {subsubsection}{\numberline {3.2.6}Notification Service --- Port 8084}{10}{subsubsection.3.2.6}%
+\contentsline {subsection}{\numberline {3.3}Diagrammes}{10}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Diagramme d'architecture globale}{10}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Diagramme de séquence : flux d'authentification}{11}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.3}Diagramme de séquence : flux d'un virement}{12}{subsubsection.3.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.4}Diagramme de séquence : flux de notification}{13}{subsubsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.4}Implémentation}{14}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Discovery Service}{14}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}API Gateway}{15}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.3}Auth Service}{16}{subsubsection.3.4.3}%
+\contentsline {paragraph}{Entité User}{16}{subsubsection.3.4.3}%
+\contentsline {paragraph}{Contrôleur REST}{16}{lstnumber.5.20}%
+\contentsline {paragraph}{Service métier}{17}{lstnumber.6.28}%
+\contentsline {paragraph}{Utilitaire JWT}{17}{lstnumber.7.43}%
+\contentsline {subsubsection}{\numberline {3.4.4}Account Service}{18}{subsubsection.3.4.4}%
+\contentsline {paragraph}{Entité Account}{18}{subsubsection.3.4.4}%
+\contentsline {paragraph}{Service métier}{19}{lstnumber.9.32}%
+\contentsline {subsubsection}{\numberline {3.4.5}Transaction Service}{20}{subsubsection.3.4.5}%
+\contentsline {paragraph}{Clients Feign}{20}{subsubsection.3.4.5}%
+\contentsline {paragraph}{Entité Transaction}{20}{lstnumber.12.5}%
+\contentsline {paragraph}{Service métier --- Virement}{21}{lstnumber.13.29}%
+\contentsline {subsubsection}{\numberline {3.4.6}Notification Service}{22}{subsubsection.3.4.6}%
+\contentsline {subsubsection}{\numberline {3.4.7}Conteneurisation --- Dockerfile}{23}{subsubsection.3.4.7}%
+\contentsline {subsubsection}{\numberline {3.4.8}Orchestration --- Docker Compose}{23}{subsubsection.3.4.8}%
+\contentsline {subsubsection}{\numberline {3.4.9}Instructions de lancement}{25}{subsubsection.3.4.9}%
+\contentsline {section}{\numberline {4}Partie C --- Avantages et inconvénients}{25}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Avantages}{25}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}Scalabilité indépendante}{25}{subsubsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.2}Déploiement continu facilité}{26}{subsubsection.4.1.2}%
+\contentsline {subsubsection}{\numberline {4.1.3}Isolation des pannes}{26}{subsubsection.4.1.3}%
+\contentsline {subsubsection}{\numberline {4.1.4}Flexibilité technologique}{26}{subsubsection.4.1.4}%
+\contentsline {subsubsection}{\numberline {4.1.5}Équipes autonomes}{26}{subsubsection.4.1.5}%
+\contentsline {subsubsection}{\numberline {4.1.6}Maintenabilité et compréhensibilité}{26}{subsubsection.4.1.6}%
+\contentsline {subsection}{\numberline {4.2}Inconvénients}{27}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Complexité opérationnelle}{27}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}Latence réseau inter-services}{27}{subsubsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.3}Gestion de la cohérence des données}{27}{subsubsection.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.2.4}Coût d'infrastructure}{27}{subsubsection.4.2.4}%
+\contentsline {subsubsection}{\numberline {4.2.5}Débogage difficile}{27}{subsubsection.4.2.5}%
+\contentsline {subsubsection}{\numberline {4.2.6}Surcharge pour les petits projets}{27}{subsubsection.4.2.6}%
+\contentsline {subsection}{\numberline {4.3}Quand utiliser les microservices~?}{28}{subsection.4.3}%
+\contentsline {subsubsection}{\numberline {4.3.1}Cas favorables}{28}{subsubsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.3.2}Cas défavorables}{28}{subsubsection.4.3.2}%
+\contentsline {subsubsection}{\numberline {4.3.3}Recommandations}{28}{subsubsection.4.3.3}%
+\contentsline {section}{\numberline {5}Conclusion}{29}{section.5}%
+\contentsline {section}{\numberline {6}Références bibliographiques}{30}{section.6}%

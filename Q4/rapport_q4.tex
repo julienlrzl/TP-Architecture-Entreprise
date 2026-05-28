@@ -1,0 +1,1382 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{times}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{tocloft}
+
+\onehalfspacing
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.95}
+\definecolor{uqacblue}{RGB}{0,51,102}
+
+\lstdefinestyle{javastyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{codegray}
+}
+
+\lstdefinestyle{ymlstyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    frame=single,
+    rulecolor=\color{codegray}
+}
+
+\lstdefinestyle{dockerstyle}{
+    backgroundcolor=\color{backcolour},
+    keywordstyle=\color{blue}\bfseries,
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numbersep=5pt,
+    frame=single,
+    morekeywords={FROM,WORKDIR,COPY,RUN,EXPOSE,ENTRYPOINT,AS}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Architecture des applications d'entreprise (8INF853)}
+\fancyhead[R]{\small Été 2026}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=uqacblue,
+    citecolor=uqacblue,
+    urlcolor=uqacblue
+}
+
+% ===== PAGE DE TITRE =====
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1cm}
+
+{\Large\textbf{Université du Québec à Chicoutimi}}\\[0.3cm]
+{\large Département d'Informatique et de Mathématique}\\[2cm]
+
+{\large\textbf{Architecture des applications d'entreprise}}\\[0.2cm]
+{\large 8INF853 --- Professeur Hamid Mcheick}\\[0.2cm]
+{\large Session : Été 2026}\\[2.5cm]
+
+{\LARGE\textbf{TP2 --- Question 4}}\\[0.5cm]
+{\Large\textbf{Architecture Microservices :}}\\[0.2cm]
+{\Large\textbf{Conception et implémentation d'une}}\\[0.2cm]
+{\Large\textbf{application bancaire distribuée}}\\[3cm]
+
+{\large
+\begin{tabular}{c}
+Thomas ESTEVES\\
+Julien LARZUL\\
+\end{tabular}
+}\\[3cm]
+
+{\large 2 juin 2026}
+
+\end{titlepage}
+
+% ===== TABLE DES MATIÈRES =====
+\newpage
+\tableofcontents
+\newpage
+
+% ============================================================
+% 1. INTRODUCTION
+% ============================================================
+\section{Introduction}
+
+\subsection{Mise en contexte}
+
+Dans le paysage actuel du développement logiciel, les entreprises font face à des exigences croissantes en matière de scalabilité, de résilience et de rapidité de mise en marché. L'architecture monolithique traditionnelle, bien qu'adaptée aux petits projets, atteint rapidement ses limites lorsque les applications gagnent en complexité et en nombre d'utilisateurs. C'est dans ce contexte qu'émerge l'architecture microservices, un paradigme architectural qui propose de décomposer une application en un ensemble de services autonomes, chacun responsable d'un domaine métier spécifique.
+
+L'architecture microservices s'inscrit pleinement dans la philosophie DevOps, qui prône l'automatisation de toutes les étapes du cycle de vie d'un logiciel, de la conception au déploiement en passant par les tests et la surveillance. Cette synergie entre microservices et DevOps constitue aujourd'hui l'une des approches les plus adoptées par les grandes organisations technologiques telles que Netflix, Amazon et Spotify \cite{newman2021}.
+
+\subsection{Objectif du travail}
+
+Ce travail pratique vise à approfondir notre compréhension de l'architecture microservices dans le cadre du cours \textit{Architecture des applications d'entreprise} (8INF853). Plus spécifiquement, nos objectifs sont :
+
+\begin{enumerate}
+    \item \textbf{Expliquer le rôle} de l'architecture microservices et de la méthode DevOps dans le développement logiciel moderne ;
+    \item \textbf{Concevoir et implémenter} une application bancaire distribuée en utilisant cette architecture, en identifiant les microservices, en produisant les diagrammes appropriés et en fournissant les implémentations correspondantes ;
+    \item \textbf{Analyser les avantages et les inconvénients} de cette approche architecturale de manière critique et argumentée.
+\end{enumerate}
+
+\subsection{Plan du document}
+
+Le présent rapport est organisé en trois parties principales. La \textbf{Partie A} (section~\ref{sec:partieA}) présente le rôle et les principes fondamentaux de l'architecture microservices. La \textbf{Partie B} (section~\ref{sec:partieB}) détaille la conception et l'implémentation de notre application bancaire. Enfin, la \textbf{Partie C} (section~\ref{sec:partieC}) propose une analyse critique des avantages et inconvénients de cette approche.
+
+% ============================================================
+% 2. PARTIE A
+% ============================================================
+\section{Partie A --- Rôle de l'architecture Microservices}
+\label{sec:partieA}
+
+\subsection{Définition et origine}
+
+\subsubsection{Qu'est-ce qu'une architecture microservices~?}
+
+L'architecture microservices est un style architectural qui structure une application comme un ensemble de services faiblement couplés, organisés autour de capacités métier (\textit{business capabilities}). Chaque microservice est un processus indépendant qui communique avec les autres via des mécanismes légers, généralement des API REST sur le protocole HTTP \cite{fowler2014}.
+
+Selon Martin Fowler, les caractéristiques fondamentales d'une architecture microservices incluent : la componentisation via des services, l'organisation autour des capacités métier, la décentralisation de la gouvernance et des données, ainsi que la conception orientée vers la tolérance aux pannes \cite{fowler2014}.
+
+\subsubsection{Contexte historique}
+
+Le passage du monolithe aux microservices s'est effectué progressivement au cours des deux dernières décennies :
+
+\begin{itemize}
+    \item \textbf{Années 2000} : Dominance des architectures monolithiques et des architectures orientées services (SOA) utilisant des protocoles lourds comme SOAP et des bus de services d'entreprise (ESB).
+    \item \textbf{2005--2010} : Émergence des concepts de services légers avec REST. Amazon et Netflix commencent à migrer vers des architectures distribuées pour répondre à leurs besoins de scalabilité.
+    \item \textbf{2011--2014} : Le terme \textit{microservices} est formalisé. James Lewis et Martin Fowler publient leur article fondateur en 2014 \cite{fowler2014}. Les outils comme Docker (2013) facilitent la conteneurisation.
+    \item \textbf{2015--aujourd'hui} : Adoption massive grâce à Kubernetes, Spring Cloud, et l'écosystème cloud-native. Les microservices deviennent le standard pour les applications distribuées à grande échelle.
+\end{itemize}
+
+\subsection{Principes fondamentaux}
+
+\subsubsection{Décomposition par domaine métier}
+
+Le principe de décomposition par domaine métier, inspiré du \textit{Domain-Driven Design} (DDD) d'Eric Evans \cite{evans2003}, consiste à identifier les frontières naturelles du système (\textit{bounded contexts}) et à créer un service pour chacun. Dans notre application bancaire, nous avons identifié quatre domaines métier distincts : l'authentification, la gestion des comptes, les transactions financières et les notifications.
+
+\subsubsection{Indépendance des services}
+
+Chaque microservice doit pouvoir être développé, testé, déployé et mis à l'échelle de manière indépendante. Cette indépendance se traduit par :
+\begin{itemize}
+    \item Un \textbf{code source séparé} : chaque service possède son propre projet Maven ;
+    \item Une \textbf{base de données propre} (\textit{database per service}) : dans notre cas, chaque service utilise sa propre instance H2 ;
+    \item Un \textbf{processus de déploiement autonome} : chaque service dispose de son propre \texttt{Dockerfile}.
+\end{itemize}
+
+\subsubsection{Communication via API REST}
+
+Les microservices communiquent entre eux via des interfaces bien définies, typiquement des API REST. Ce choix favorise un couplage faible entre les services. Dans notre application, le \texttt{transaction-service} communique avec le \texttt{account-service} et le \texttt{notification-service} via OpenFeign, un client HTTP déclaratif qui simplifie les appels inter-services \cite{springcloud2024}.
+
+\subsubsection{Déploiement indépendant}
+
+Grâce à la conteneurisation avec Docker, chaque service peut être déployé indépendamment des autres. Le fichier \texttt{docker-compose.yml} orchestre le démarrage de l'ensemble des conteneurs tout en respectant les dépendances de démarrage via les \texttt{healthcheck} et les \texttt{depends\_on}.
+
+\subsubsection{Décentralisation des données}
+
+Contrairement à l'approche monolithique où une seule base de données est partagée, chaque microservice gère sa propre base de données. Ce principe, connu sous le nom de \textit{database per service}, garantit l'autonomie de chaque service et élimine les dépendances de schéma partagé \cite{richardson2018}.
+
+\subsection{Étapes du cycle de vie}
+
+\subsubsection{Conception et découpage en services}
+
+La première étape consiste à analyser le domaine métier et à identifier les services. Cette décomposition s'appuie sur les principes du DDD et sur le principe de responsabilité unique (SRP). Chaque service doit être suffisamment petit pour être maintenu par une équipe réduite, mais suffisamment cohérent pour encapsuler un domaine métier complet.
+
+\subsubsection{Développement indépendant}
+
+Chaque équipe développe son service de manière autonome, en choisissant les technologies les mieux adaptées. Dans notre cas, tous les services utilisent Java 17 et Spring Boot 3.x, mais le principe permettrait d'utiliser des langages différents pour chaque service.
+
+\subsubsection{Conteneurisation avec Docker}
+
+La conteneurisation permet d'empaqueter chaque service avec toutes ses dépendances dans une image Docker légère et reproductible. Le \texttt{Dockerfile} multi-étapes (\textit{multi-stage build}) que nous utilisons sépare la phase de compilation (Maven) de la phase d'exécution (JRE Alpine), réduisant ainsi la taille de l'image finale.
+
+\subsubsection{Orchestration et déploiement}
+
+Docker Compose permet d'orchestrer le déploiement local de l'ensemble des services. En environnement de production, des outils comme Kubernetes prennent le relais pour gérer la scalabilité automatique, la répartition de charge et la tolérance aux pannes.
+
+\subsubsection{Monitoring et observabilité}
+
+L'observabilité est essentielle dans une architecture distribuée. Chaque service expose des endpoints \texttt{/actuator/health} via Spring Boot Actuator, permettant de surveiller l'état de santé de l'application. Le \texttt{notification-service} assure la journalisation des événements métier.
+
+\subsection{Comparaison Monolithe vs Microservices}
+
+\begin{table}[H]
+\centering
+\caption{Comparaison entre architecture monolithique et microservices}
+\label{tab:comparaison}
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Critère} & \textbf{Monolithe} & \textbf{Microservices} \\
+\hline
+Déploiement & Tout ou rien & Indépendant par service \\
+\hline
+Scalabilité & Verticale (tout le système) & Horizontale (par service) \\
+\hline
+Base de données & Unique et partagée & Une par service \\
+\hline
+Technologies & Uniformes & Hétérogènes possibles \\
+\hline
+Couplage & Fort (modules liés) & Faible (API REST) \\
+\hline
+Complexité initiale & Faible & Élevée \\
+\hline
+Tolérance aux pannes & Panne globale & Isolation des pannes \\
+\hline
+Taille des équipes & Grande équipe unique & Petites équipes autonomes \\
+\hline
+Tests & Tests d'intégration simples & Tests distribués complexes \\
+\hline
+Communication & Appels de méthodes en mémoire & Appels réseau (latence) \\
+\hline
+\end{tabularx}
+\end{table}
+
+
+% ============================================================
+% 3. PARTIE B
+% ============================================================
+\section{Partie B --- Application bancaire en microservices}
+\label{sec:partieB}
+
+\subsection{Présentation de l'application}
+
+\subsubsection{Description générale}
+
+Notre application bancaire est un système distribué composé de six microservices indépendants. Elle permet aux utilisateurs de s'inscrire, de s'authentifier, de gérer des comptes bancaires (courant et épargne), d'effectuer des opérations financières (dépôt, retrait, virement) et de consulter l'historique des notifications associées à leurs transactions.
+
+L'architecture suit le modèle classique des microservices avec une passerelle API centralisée (\textit{API Gateway}) et un registre de découverte de services (\textit{Service Registry}).
+
+\subsubsection{Choix technologiques justifiés}
+
+\begin{table}[H]
+\centering
+\caption{Stack technique et justifications}
+\label{tab:stack}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Technologie} & \textbf{Version} & \textbf{Justification} \\
+\hline
+Java & 17 (LTS) & Langage mature, typage fort, écosystème riche pour les applications d'entreprise \\
+\hline
+Spring Boot & 3.x & Framework de référence pour les microservices Java, auto-configuration, démarrage rapide \\
+\hline
+Spring Cloud & 2023.x & Fournit les patrons d'infrastructure distribuée (Gateway, Discovery, Feign) \\
+\hline
+Netflix Eureka & --- & Registre de services éprouvé, intégration native avec Spring Cloud \\
+\hline
+OpenFeign & --- & Client HTTP déclaratif, simplifie la communication inter-services \\
+\hline
+H2 Database & --- & Base de données en mémoire, idéale pour le prototypage et les démonstrations \\
+\hline
+Docker & --- & Conteneurisation standardisée, reproductibilité des environnements \\
+\hline
+Docker Compose & --- & Orchestration multi-conteneurs pour le déploiement local \\
+\hline
+Maven & --- & Gestion des dépendances et du cycle de build \\
+\hline
+Lombok & --- & Réduction du code \textit{boilerplate} (getters, setters, constructeurs) \\
+\hline
+BCrypt & --- & Hachage sécurisé des mots de passe \\
+\hline
+JWT & --- & Authentification stateless, adaptée aux architectures distribuées \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Identification et description des microservices}
+
+\subsubsection{Discovery Service (Eureka Server) --- Port 8761}
+
+\textbf{Rôle et responsabilité :} Le \texttt{discovery-service} agit comme un registre central où tous les microservices s'enregistrent au démarrage. Il permet la découverte dynamique des services, éliminant le besoin de coder en dur les adresses IP et les ports. Ce patron est connu sous le nom de \textit{Service Registry} \cite{richardson2018}.
+
+\begin{table}[H]
+\centering
+\caption{Endpoints du discovery-service}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Méthode} & \textbf{Endpoint} & \textbf{Description} \\
+\hline
+GET & /eureka/apps & Liste tous les services enregistrés \\
+\hline
+GET & /actuator/health & État de santé du service \\
+\hline
+\end{tabularx}
+\end{table}
+
+\textbf{Dépendances :} Aucune. C'est le premier service à démarrer.\\
+\textbf{Base de données :} Aucune (registre en mémoire).
+
+\subsubsection{API Gateway (Spring Cloud Gateway) --- Port 8080}
+
+\textbf{Rôle et responsabilité :} L'\texttt{api-gateway} est le point d'entrée unique de l'application. Il route les requêtes HTTP entrantes vers le microservice approprié en se basant sur les prédicats de chemin (\textit{path predicates}). Ce patron est connu sous le nom de \textit{API Gateway Pattern} \cite{richardson2018}.
+
+\begin{table}[H]
+\centering
+\caption{Routes configurées dans l'API Gateway}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Chemin} & \textbf{Service cible} & \textbf{Description} \\
+\hline
+/auth/** & auth-service & Authentification et inscription \\
+\hline
+/accounts/** & account-service & Gestion des comptes \\
+\hline
+/transactions/** & transaction-service & Opérations financières \\
+\hline
+/notifications/** & notification-service & Consultation des notifications \\
+\hline
+\end{tabularx}
+\end{table}
+
+\textbf{Dépendances :} discovery-service (pour la résolution des adresses).\\
+\textbf{Base de données :} Aucune.
+
+\subsubsection{Auth Service --- Port 8081}
+
+\textbf{Rôle et responsabilité :} Le \texttt{auth-service} gère l'authentification des utilisateurs. Il permet l'inscription et la connexion, et génère des jetons JWT (\textit{JSON Web Tokens}) pour l'authentification stateless.
+
+\begin{table}[H]
+\centering
+\caption{Endpoints du auth-service}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Méthode} & \textbf{Endpoint} & \textbf{Description} \\
+\hline
+POST & /auth/register & Inscription d'un nouvel utilisateur \\
+\hline
+POST & /auth/login & Connexion (retourne un JWT) \\
+\hline
+GET & /auth/health & État de santé du service \\
+\hline
+\end{tabularx}
+\end{table}
+
+\textbf{Dépendances :} discovery-service.\\
+\textbf{Base de données :} \texttt{authdb} (H2) --- table \texttt{users}.
+
+\subsubsection{Account Service --- Port 8082}
+
+\textbf{Rôle et responsabilité :} Le \texttt{account-service} gère le cycle de vie des comptes bancaires : création, consultation et mise à jour des soldes. Il expose également un endpoint interne pour la mise à jour des soldes, utilisé par le \texttt{transaction-service}.
+
+\begin{table}[H]
+\centering
+\caption{Endpoints du account-service}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Méthode} & \textbf{Endpoint} & \textbf{Description} \\
+\hline
+POST & /accounts & Créer un nouveau compte \\
+\hline
+GET & /accounts/\{id\} & Consulter un compte par ID \\
+\hline
+GET & /accounts/user/\{userId\} & Comptes d'un utilisateur \\
+\hline
+PUT & /accounts/\{id\}/balance & Mettre à jour le solde (interne) \\
+\hline
+\end{tabularx}
+\end{table}
+
+\textbf{Dépendances :} discovery-service.\\
+\textbf{Base de données :} \texttt{accountdb} (H2) --- table \texttt{accounts}.
+
+\subsubsection{Transaction Service --- Port 8083}
+
+\textbf{Rôle et responsabilité :} Le \texttt{transaction-service} orchestre les opérations financières : dépôts, retraits et virements. C'est le service le plus interconnecté : il appelle le \texttt{account-service} pour vérifier et mettre à jour les soldes, et le \texttt{notification-service} pour journaliser chaque opération.
+
+\begin{table}[H]
+\centering
+\caption{Endpoints du transaction-service}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Méthode} & \textbf{Endpoint} & \textbf{Description} \\
+\hline
+POST & /transactions/deposit & Effectuer un dépôt \\
+\hline
+POST & /transactions/withdraw & Effectuer un retrait \\
+\hline
+POST & /transactions/transfer & Effectuer un virement \\
+\hline
+GET & /transactions/\{accountId\} & Historique des transactions \\
+\hline
+\end{tabularx}
+\end{table}
+
+\textbf{Dépendances :} discovery-service, account-service (via Feign), notification-service (via Feign).\\
+\textbf{Base de données :} \texttt{transactiondb} (H2) --- table \texttt{transactions}.
+
+\subsubsection{Notification Service --- Port 8084}
+
+\textbf{Rôle et responsabilité :} Le \texttt{notification-service} reçoit et stocke les notifications générées par les opérations financières. Il assure la traçabilité de toutes les actions effectuées dans le système.
+
+\begin{table}[H]
+\centering
+\caption{Endpoints du notification-service}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Méthode} & \textbf{Endpoint} & \textbf{Description} \\
+\hline
+POST & /notifications & Créer une notification (interne) \\
+\hline
+GET & /notifications & Lister toutes les notifications \\
+\hline
+GET & /notifications/account/\{id\} & Notifications par compte \\
+\hline
+\end{tabularx}
+\end{table}
+
+\textbf{Dépendances :} discovery-service.\\
+\textbf{Base de données :} \texttt{notificationdb} (H2) --- table \texttt{notifications}.
+
+
+\subsection{Diagrammes}
+
+Les diagrammes suivants illustrent l'architecture de notre application et les flux de communication entre les services. Ils sont présentés ici en notation textuelle Mermaid.js et sont fournis séparément en tant que fichiers rendus.
+
+\subsubsection{Diagramme d'architecture globale}
+
+La figure~\ref{fig:archi} présente la vue d'ensemble de l'architecture. Le client interagit exclusivement avec l'API Gateway, qui route les requêtes vers les services appropriés. Tous les services s'enregistrent auprès d'Eureka pour la découverte dynamique.
+
+\begin{figure}[H]
+\centering
+\begin{verbatim}
+graph TB
+    Client([Client HTTP]) --> GW[API Gateway :8080]
+    GW --> AUTH[Auth Service :8081]
+    GW --> ACC[Account Service :8082]
+    GW --> TXN[Transaction Service :8083]
+    GW --> NOTIF[Notification Service :8084]
+    TXN -->|OpenFeign| ACC
+    TXN -->|OpenFeign| NOTIF
+    AUTH --> DB1[(authdb H2)]
+    ACC --> DB2[(accountdb H2)]
+    TXN --> DB3[(transactiondb H2)]
+    NOTIF --> DB4[(notificationdb H2)]
+    GW -.->|register| EUR[Eureka :8761]
+    AUTH -.->|register| EUR
+    ACC -.->|register| EUR
+    TXN -.->|register| EUR
+    NOTIF -.->|register| EUR
+\end{verbatim}
+\caption{Diagramme d'architecture globale de l'application bancaire}
+\label{fig:archi}
+\end{figure}
+
+\subsubsection{Diagramme de séquence : flux d'authentification}
+
+La figure~\ref{fig:seq_auth} illustre le flux d'inscription et de connexion d'un utilisateur.
+
+\begin{figure}[H]
+\centering
+\begin{verbatim}
+sequenceDiagram
+    participant C as Client
+    participant GW as API Gateway
+    participant AUTH as Auth Service
+    participant DB as authdb (H2)
+    C->>GW: POST /auth/register {username, email, password}
+    GW->>AUTH: Forward request
+    AUTH->>DB: Vérifier unicité username/email
+    DB-->>AUTH: OK (pas de doublon)
+    AUTH->>AUTH: Hacher mot de passe (BCrypt)
+    AUTH->>DB: INSERT user
+    AUTH->>AUTH: Générer JWT
+    AUTH-->>GW: 201 {token, username, userId}
+    GW-->>C: 201 Created
+    Note over C,DB: --- Connexion ---
+    C->>GW: POST /auth/login {username, password}
+    GW->>AUTH: Forward request
+    AUTH->>DB: SELECT user by username
+    AUTH->>AUTH: Vérifier BCrypt(password, hash)
+    AUTH->>AUTH: Générer JWT
+    AUTH-->>GW: 200 {token, username, userId}
+    GW-->>C: 200 OK
+\end{verbatim}
+\caption{Diagramme de séquence --- Flux d'authentification}
+\label{fig:seq_auth}
+\end{figure}
+
+\subsubsection{Diagramme de séquence : flux d'un virement}
+
+La figure~\ref{fig:seq_transfer} détaille le processus d'un virement bancaire, qui implique trois microservices.
+
+\begin{figure}[H]
+\centering
+\begin{verbatim}
+sequenceDiagram
+    participant C as Client
+    participant GW as API Gateway
+    participant TXN as Transaction Service
+    participant ACC as Account Service
+    participant NOTIF as Notification Service
+    C->>GW: POST /transactions/transfer
+    GW->>TXN: Forward {sourceId, targetId, amount}
+    TXN->>ACC: GET /accounts/{sourceId} (Feign)
+    ACC-->>TXN: AccountDto (source)
+    TXN->>ACC: GET /accounts/{targetId} (Feign)
+    ACC-->>TXN: AccountDto (target)
+    TXN->>TXN: Vérifier compte actif + solde suffisant
+    TXN->>ACC: PUT /accounts/{sourceId}/balance WITHDRAW
+    ACC-->>TXN: OK (solde débité)
+    TXN->>ACC: PUT /accounts/{targetId}/balance DEPOSIT
+    ACC-->>TXN: OK (solde crédité)
+    TXN->>TXN: Sauvegarder Transaction (SUCCESS)
+    TXN->>NOTIF: POST /notifications (TRANSFER_DEBIT)
+    NOTIF-->>TXN: 201 Created
+    TXN->>NOTIF: POST /notifications (TRANSFER_CREDIT)
+    NOTIF-->>TXN: 201 Created
+    TXN-->>GW: 201 {TransactionResponse}
+    GW-->>C: 201 Created
+\end{verbatim}
+\caption{Diagramme de séquence --- Flux d'un virement bancaire}
+\label{fig:seq_transfer}
+\end{figure}
+
+\subsubsection{Diagramme de séquence : flux de notification}
+
+La figure~\ref{fig:seq_notif} illustre comment le \texttt{notification-service} reçoit et traite les événements.
+
+\begin{figure}[H]
+\centering
+\begin{verbatim}
+sequenceDiagram
+    participant TXN as Transaction Service
+    participant NOTIF as Notification Service
+    participant DB as notificationdb (H2)
+    TXN->>NOTIF: POST /notifications {eventType, message, accountId, txnId}
+    NOTIF->>NOTIF: Log [EVENT] eventType | Account | Transaction | message
+    NOTIF->>DB: INSERT notification (status=DELIVERED)
+    DB-->>NOTIF: OK
+    NOTIF-->>TXN: 201 {NotificationResponse}
+\end{verbatim}
+\caption{Diagramme de séquence --- Flux de notification}
+\label{fig:seq_notif}
+\end{figure}
+
+\subsection{Implémentation}
+
+Cette section présente les extraits de code les plus significatifs de chaque microservice, accompagnés d'explications détaillées.
+
+\subsubsection{Discovery Service}
+
+Le \texttt{discovery-service} est le composant le plus simple : il s'agit d'un serveur Eureka activé par une simple annotation.
+
+\begin{lstlisting}[style=javastyle, caption={DiscoveryApplication.java --- Point d'entrée du serveur Eureka}, label=lst:discovery]
+package com.banking.discovery;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+
+// L'annotation @EnableEurekaServer active le registre de decouverte
+// Tous les autres services s'enregistreront aupres de ce serveur
+@SpringBootApplication
+@EnableEurekaServer
+public class DiscoveryApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DiscoveryApplication.class, args);
+    }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=ymlstyle, caption={application.yml du discovery-service}, label=lst:discovery_yml]
+server:
+  port: 8761
+spring:
+  application:
+    name: discovery-service
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    # Le serveur Eureka ne s'enregistre pas aupres de lui-meme
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+    enable-self-preservation: false
+\end{lstlisting}
+
+\subsubsection{API Gateway}
+
+L'API Gateway utilise Spring Cloud Gateway pour router les requêtes. La configuration est entièrement déclarative dans le fichier YAML.
+
+\begin{lstlisting}[style=javastyle, caption={GatewayApplication.java}, label=lst:gateway]
+package com.banking.gateway;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class GatewayApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(GatewayApplication.class, args);
+    }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=ymlstyle, caption={application.yml de l'API Gateway --- Configuration du routage}, label=lst:gateway_yml]
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        # Chaque route definit un predicat de chemin et un service cible
+        # lb:// indique un load balancing via Eureka
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+        - id: account-service
+          uri: lb://account-service
+          predicates:
+            - Path=/accounts/**
+        - id: transaction-service
+          uri: lb://transaction-service
+          predicates:
+            - Path=/transactions/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/notifications/**
+\end{lstlisting}
+
+
+\subsubsection{Auth Service}
+
+Le service d'authentification implémente le patron d'inscription/connexion avec hachage BCrypt et génération de jetons JWT.
+
+\paragraph{Entité User}
+
+\begin{lstlisting}[style=javastyle, caption={User.java --- Entité JPA représentant un utilisateur}, label=lst:user]
+@Entity
+@Table(name = "users")
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password; // Hache avec BCrypt
+
+    @Column(nullable = false)
+    private String role; // Ex: "USER"
+}
+\end{lstlisting}
+
+\paragraph{Contrôleur REST}
+
+\begin{lstlisting}[style=javastyle, caption={AuthController.java --- Endpoints REST d'authentification}, label=lst:authctrl]
+@RestController
+@RequestMapping("/auth")
+@RequiredArgsConstructor
+public class AuthController {
+    private final AuthService authService;
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        try {
+            AuthResponse response = authService.register(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            AuthResponse response = authService.login(request);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", e.getMessage()));
+        }
+    }
+}
+\end{lstlisting}
+
+\paragraph{Service métier}
+
+\begin{lstlisting}[style=javastyle, caption={AuthService.java --- Logique métier d'authentification}, label=lst:authsvc]
+@Service
+@RequiredArgsConstructor
+public class AuthService {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+
+    public AuthResponse register(RegisterRequest request) {
+        // Verification de l'unicite du username et de l'email
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+        // Creation de l'utilisateur avec mot de passe hache
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role("USER")
+                .build();
+        User savedUser = userRepository.save(user);
+        // Generation du token JWT
+        String token = jwtUtil.generateToken(
+            savedUser.getUsername(), savedUser.getId());
+        return new AuthResponse(token, savedUser.getUsername(),
+            savedUser.getId(), "User registered successfully");
+    }
+
+    public AuthResponse login(LoginRequest request) {
+        User user = userRepository.findByUsername(request.getUsername())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        if (!passwordEncoder.matches(
+                request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+        String token = jwtUtil.generateToken(
+            user.getUsername(), user.getId());
+        return new AuthResponse(token, user.getUsername(),
+            user.getId(), "Login successful");
+    }
+}
+\end{lstlisting}
+
+\paragraph{Utilitaire JWT}
+
+\begin{lstlisting}[style=javastyle, caption={JwtUtil.java --- Génération et validation des jetons JWT}, label=lst:jwt]
+@Component
+public class JwtUtil {
+    @Value("${jwt.secret}")
+    private String secret;
+    @Value("${jwt.expiration}")
+    private Long expiration;
+
+    public String generateToken(String username, Long userId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(
+                    System.currentTimeMillis() + expiration))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public boolean isTokenValid(String token) {
+        try {
+            extractAllClaims(token);
+            return !isTokenExpired(token);
+        } catch (Exception e) { return false; }
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Account Service}
+
+Le service de gestion des comptes encapsule toute la logique CRUD des comptes bancaires.
+
+\paragraph{Entité Account}
+
+\begin{lstlisting}[style=javastyle, caption={Account.java --- Entité JPA représentant un compte bancaire}, label=lst:account]
+@Entity
+@Table(name = "accounts")
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
+public class Account {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String accountNumber; // Genere automatiquement (ACC + 10 chiffres)
+
+    @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
+    private String ownerName;
+
+    @Column(nullable = false, precision = 15, scale = 2)
+    private BigDecimal balance;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType; // CHECKING ou SAVINGS
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private boolean active;
+
+    public enum AccountType { CHECKING, SAVINGS }
+}
+\end{lstlisting}
+
+\paragraph{Service métier}
+
+\begin{lstlisting}[style=javastyle, caption={AccountService.java --- Logique métier de gestion des comptes (extrait)}, label=lst:accsvc]
+@Service
+@RequiredArgsConstructor
+public class AccountService {
+    private final AccountRepository accountRepository;
+
+    @Transactional
+    public AccountResponse createAccount(AccountRequest request) {
+        Account.AccountType type;
+        try {
+            type = Account.AccountType.valueOf(
+                request.getAccountType().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            type = Account.AccountType.CHECKING;
+        }
+        BigDecimal initialBalance = request.getInitialBalance() != null
+                ? request.getInitialBalance() : BigDecimal.ZERO;
+        Account account = Account.builder()
+                .accountNumber(generateAccountNumber())
+                .userId(request.getUserId())
+                .ownerName(request.getOwnerName())
+                .balance(initialBalance)
+                .accountType(type)
+                .createdAt(LocalDateTime.now())
+                .active(true).build();
+        return toResponse(accountRepository.save(account));
+    }
+
+    @Transactional
+    public AccountResponse updateBalance(Long accountId,
+            BalanceUpdateRequest request) {
+        Account account = accountRepository.findById(accountId)
+            .orElseThrow(() -> new RuntimeException("Account not found"));
+        BigDecimal amount = request.getAmount();
+        switch (request.getOperation().toUpperCase()) {
+            case "DEPOSIT":
+                account.setBalance(account.getBalance().add(amount));
+                break;
+            case "WITHDRAW":
+                if (account.getBalance().compareTo(amount) < 0)
+                    throw new RuntimeException("Insufficient funds");
+                account.setBalance(account.getBalance().subtract(amount));
+                break;
+        }
+        return toResponse(accountRepository.save(account));
+    }
+
+    // Genere un numero de compte unique : ACC + 10 chiffres
+    private String generateAccountNumber() {
+        String number;
+        do {
+            number = "ACC" + String.format("%010d",
+                new Random().nextLong(9_999_999_999L));
+        } while (accountRepository.existsByAccountNumber(number));
+        return number;
+    }
+}
+\end{lstlisting}
+
+
+\subsubsection{Transaction Service}
+
+Le service de transactions est le plus complexe : il orchestre les appels inter-services via OpenFeign.
+
+\paragraph{Clients Feign}
+
+Les clients Feign déclarent les interfaces des services distants de manière déclarative. La résolution d'adresse passe par Eureka grâce à l'attribut \texttt{name} du \texttt{@FeignClient}.
+
+\begin{lstlisting}[style=javastyle, caption={AccountClient.java --- Client Feign pour le account-service}, label=lst:feignacc]
+// @FeignClient(name = "account-service") : Feign resout l'adresse
+// via Eureka en utilisant le nom du service enregistre
+@FeignClient(name = "account-service")
+public interface AccountClient {
+    @GetMapping("/accounts/{id}")
+    AccountDto getAccount(@PathVariable("id") Long id);
+
+    @PutMapping("/accounts/{id}/balance")
+    AccountDto updateBalance(@PathVariable("id") Long id,
+                             @RequestBody BalanceUpdateRequest request);
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=javastyle, caption={NotificationClient.java --- Client Feign pour le notification-service}, label=lst:feignnotif]
+@FeignClient(name = "notification-service")
+public interface NotificationClient {
+    @PostMapping("/notifications")
+    void sendNotification(@RequestBody NotificationRequest request);
+}
+\end{lstlisting}
+
+\paragraph{Entité Transaction}
+
+\begin{lstlisting}[style=javastyle, caption={Transaction.java --- Entité JPA}, label=lst:transaction]
+@Entity
+@Table(name = "transactions")
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
+public class Transaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private Long sourceAccountId;
+    private Long targetAccountId; // null pour depot/retrait
+
+    @Column(nullable = false, precision = 15, scale = 2)
+    private BigDecimal amount;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionType type;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status;
+
+    @Column(length = 500)
+    private String description;
+
+    private LocalDateTime createdAt;
+
+    public enum TransactionType { DEPOSIT, WITHDRAWAL, TRANSFER }
+    public enum TransactionStatus { SUCCESS, FAILED }
+}
+\end{lstlisting}
+
+\paragraph{Service métier --- Virement}
+
+\begin{lstlisting}[style=javastyle, caption={TransactionService.java --- Logique du virement (extrait)}, label=lst:txnsvc]
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class TransactionService {
+    private final TransactionRepository transactionRepository;
+    private final AccountClient accountClient;
+    private final NotificationClient notificationClient;
+
+    @Transactional
+    public TransactionResponse transfer(TransactionRequest request) {
+        Long sourceId = request.getSourceAccountId();
+        Long targetId = request.getTargetAccountId();
+        BigDecimal amount = request.getAmount();
+
+        // 1. Recuperation des comptes via Feign
+        AccountDto source = accountClient.getAccount(sourceId);
+        AccountDto target = accountClient.getAccount(targetId);
+
+        // 2. Validations metier
+        if (!source.isActive())
+            throw new RuntimeException("Source account not active");
+        if (!target.isActive())
+            throw new RuntimeException("Target account not active");
+        if (source.getBalance().compareTo(amount) < 0)
+            throw new RuntimeException("Insufficient funds");
+
+        // 3. Mise a jour des soldes via Feign
+        accountClient.updateBalance(sourceId,
+            new BalanceUpdateRequest(amount, "WITHDRAW"));
+        accountClient.updateBalance(targetId,
+            new BalanceUpdateRequest(amount, "DEPOSIT"));
+
+        // 4. Sauvegarde de la transaction
+        Transaction transaction = Transaction.builder()
+            .sourceAccountId(sourceId).targetAccountId(targetId)
+            .amount(amount).type(Transaction.TransactionType.TRANSFER)
+            .status(Transaction.TransactionStatus.SUCCESS)
+            .description(request.getDescription() != null
+                ? request.getDescription() : "Transfer")
+            .createdAt(LocalDateTime.now()).build();
+        Transaction saved = transactionRepository.save(transaction);
+
+        // 5. Envoi des notifications via Feign
+        sendNotification("TRANSFER_DEBIT", sourceId, saved.getId(),
+            String.format("Transfer of %.2f from %s to %s",
+                amount, source.getAccountNumber(),
+                target.getAccountNumber()));
+        sendNotification("TRANSFER_CREDIT", targetId, saved.getId(),
+            String.format("Transfer of %.2f received from %s to %s",
+                amount, source.getAccountNumber(),
+                target.getAccountNumber()));
+        return toResponse(saved);
+    }
+
+    // Envoi resilient : en cas d'echec, un warning est logue
+    // mais la transaction n'est pas annulee
+    private void sendNotification(String eventType, Long accountId,
+            Long transactionId, String message) {
+        try {
+            notificationClient.sendNotification(
+                new NotificationRequest(eventType, message,
+                    accountId, transactionId));
+        } catch (Exception e) {
+            log.warn("Failed to send notification for tx {}: {}",
+                transactionId, e.getMessage());
+        }
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Notification Service}
+
+\begin{lstlisting}[style=javastyle, caption={NotificationService.java --- Journalisation des événements}, label=lst:notifsvc]
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class NotificationService {
+    private final NotificationRepository notificationRepository;
+
+    public NotificationResponse createNotification(
+            NotificationRequest request) {
+        // Journalisation structuree de l'evenement
+        log.info("[EVENT] {} | Account: {} | Transaction: {} | {}",
+            request.getEventType(), request.getAccountId(),
+            request.getTransactionId(), request.getMessage());
+
+        Notification notification = Notification.builder()
+            .eventType(request.getEventType())
+            .message(request.getMessage())
+            .accountId(request.getAccountId())
+            .transactionId(request.getTransactionId())
+            .createdAt(LocalDateTime.now())
+            .status("DELIVERED").build();
+        return toResponse(notificationRepository.save(notification));
+    }
+
+    public List<NotificationResponse> getAllNotifications() {
+        return notificationRepository.findAll().stream()
+            .map(this::toResponse).collect(Collectors.toList());
+    }
+
+    public List<NotificationResponse> getNotificationsByAccount(
+            Long accountId) {
+        return notificationRepository
+            .findByAccountIdOrderByCreatedAtDesc(accountId)
+            .stream().map(this::toResponse)
+            .collect(Collectors.toList());
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Conteneurisation --- Dockerfile}
+
+Tous les services utilisent le même \texttt{Dockerfile} multi-étapes :
+
+\begin{lstlisting}[style=dockerstyle, caption={Dockerfile commun à tous les services}, label=lst:dockerfile]
+# Etape 1 : Compilation avec Maven
+FROM maven:3.9.5-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY src ./src
+RUN mvn clean package -DskipTests -B
+
+# Etape 2 : Image d'execution legere
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8761
+ENTRYPOINT ["java", "-jar", "app.jar"]
+\end{lstlisting}
+
+Ce \texttt{Dockerfile} multi-étapes (\textit{multi-stage build}) présente deux avantages majeurs : (1) la séparation entre l'environnement de compilation et l'environnement d'exécution, et (2) la réduction significative de la taille de l'image finale en utilisant Alpine Linux.
+
+\subsubsection{Orchestration --- Docker Compose}
+
+\begin{lstlisting}[style=ymlstyle, caption={docker-compose.yml --- Orchestration de tous les services}, label=lst:compose]
+services:
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    ports: ["8761:8761"]
+    networks: [banking-network]
+    healthcheck:
+      test: ["CMD-SHELL",
+        "wget -qO- http://localhost:8761/actuator/health | grep -q UP"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports: ["9080:8080"]
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=
+          http://discovery-service:8761/eureka/
+    networks: [banking-network]
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports: ["9081:8081"]
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=
+          http://discovery-service:8761/eureka/
+    networks: [banking-network]
+    depends_on:
+      discovery-service: { condition: service_healthy }
+
+  account-service:
+    build: ./account-service
+    ports: ["8082:8082"]
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=
+          http://discovery-service:8761/eureka/
+    networks: [banking-network]
+    depends_on:
+      discovery-service: { condition: service_healthy }
+
+  transaction-service:
+    build: ./transaction-service
+    ports: ["8083:8083"]
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=
+          http://discovery-service:8761/eureka/
+    networks: [banking-network]
+    depends_on:
+      discovery-service: { condition: service_healthy }
+      account-service: { condition: service_healthy }
+      notification-service: { condition: service_healthy }
+
+  notification-service:
+    build: ./notification-service
+    ports: ["8084:8084"]
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=
+          http://discovery-service:8761/eureka/
+    networks: [banking-network]
+    depends_on:
+      discovery-service: { condition: service_healthy }
+
+networks:
+  banking-network:
+    driver: bridge
+\end{lstlisting}
+
+\subsubsection{Instructions de lancement}
+
+Pour lancer l'application complète, les commandes suivantes suffisent :
+
+\begin{lstlisting}[language=bash, basicstyle=\ttfamily\small, frame=single]
+# Cloner le projet
+git clone <repository-url>
+cd banking-microservices
+
+# Construire et lancer tous les services
+docker-compose up --build
+
+# Verifier sur le dashboard Eureka
+# http://localhost:8761
+\end{lstlisting}
+
+L'ordre de démarrage est géré automatiquement par les directives \texttt{depends\_on} combinées aux \texttt{healthcheck}. Le \texttt{discovery-service} démarre en premier, puis les services métier, et enfin le \texttt{transaction-service} (qui dépend de \texttt{account-service} et \texttt{notification-service}). Le temps de démarrage initial est d'environ 3 à 5 minutes, car Maven télécharge les dépendances lors du premier build.
+
+
+% ============================================================
+% 4. PARTIE C
+% ============================================================
+\section{Partie C --- Avantages et inconvénients}
+\label{sec:partieC}
+
+\subsection{Avantages}
+
+\subsubsection{Scalabilité indépendante}
+
+Chaque microservice peut être mis à l'échelle indépendamment en fonction de sa charge. Par exemple, si le \texttt{transaction-service} reçoit un pic de requêtes lors des jours de paie, il est possible de déployer plusieurs instances de ce service sans dupliquer les autres. Docker Compose, et a fortiori Kubernetes, permettent cette scalabilité horizontale granulaire \cite{newman2021}.
+
+\textit{Illustration dans notre application :} Le \texttt{transaction-service} peut être répliqué horizontalement, et Eureka distribue la charge via le load balancing côté client (\texttt{lb://}).
+
+\subsubsection{Déploiement continu facilité}
+
+L'indépendance des services permet de déployer des correctifs ou des nouvelles fonctionnalités sur un service sans affecter les autres. Cette caractéristique s'aligne parfaitement avec les pratiques CI/CD de la méthode DevOps. Un bug dans le \texttt{notification-service} peut être corrigé et redéployé sans interrompre les opérations bancaires \cite{humble2010}.
+
+\textit{Illustration :} Chaque service possède son propre \texttt{Dockerfile} et peut être reconstruit et redéployé indépendamment via \texttt{docker-compose up --build notification-service}.
+
+\subsubsection{Isolation des pannes}
+
+Dans une architecture monolithique, une erreur dans un module peut entraîner l'arrêt complet de l'application. Avec les microservices, une panne d'un service n'affecte pas directement les autres. Dans notre application, si le \texttt{notification-service} tombe en panne, les transactions continuent de fonctionner grâce au bloc \texttt{try-catch} dans la méthode \texttt{sendNotification()} du \texttt{TransactionService} \cite{nygard2018}.
+
+\textit{Illustration :} Le code du listing~\ref{lst:txnsvc} montre que l'envoi de notification est enveloppé dans un \texttt{try-catch}. Un échec de notification génère un avertissement dans les logs mais n'empêche pas la transaction.
+
+\subsubsection{Flexibilité technologique}
+
+Chaque service peut utiliser la technologie la plus adaptée à son domaine. Bien que notre application utilise uniformément Java et Spring Boot, rien n'empêcherait de réécrire le \texttt{notification-service} en Python ou Go si les besoins l'exigeaient, tant que l'interface REST est respectée \cite{fowler2014}.
+
+\subsubsection{Équipes autonomes}
+
+Les microservices facilitent l'organisation en équipes pluridisciplinaires, chacune responsable d'un service de bout en bout (développement, tests, déploiement, monitoring). Cette organisation, inspirée de la loi de Conway, réduit les frictions inter-équipes et accélère le développement \cite{conway1968}.
+
+\textit{Illustration :} Quatre équipes pourraient travailler simultanément sur les quatre services métier (auth, account, transaction, notification) sans se bloquer mutuellement.
+
+\subsubsection{Maintenabilité et compréhensibilité}
+
+Chaque microservice a une taille réduite et une responsabilité clairement définie, ce qui facilite la compréhension du code et réduit la charge cognitive des développeurs. Le principe de responsabilité unique (SRP) est naturellement respecté à l'échelle des services \cite{martin2017}.
+
+\textit{Illustration :} Le \texttt{notification-service} ne contient que 66 lignes dans sa classe de service, ce qui le rend facilement compréhensible par un nouveau développeur.
+
+\subsection{Inconvénients}
+
+\subsubsection{Complexité opérationnelle}
+
+L'architecture microservices introduit une complexité opérationnelle significative. Au lieu de gérer un seul déploiement, il faut orchestrer six conteneurs avec leurs dépendances de démarrage, leurs healthchecks, et leur réseau interne. Le fichier \texttt{docker-compose.yml} de notre application fait déjà 119 lignes pour six services relativement simples \cite{richardson2018}.
+
+\subsubsection{Latence réseau inter-services}
+
+Contrairement à un monolithe où les appels entre modules sont des appels de méthodes en mémoire (nanosecondes), les appels inter-services passent par le réseau (millisecondes). Un virement dans notre application nécessite au minimum six appels réseau (deux lectures de compte, deux mises à jour de solde, deux notifications), ce qui multiplie la latence totale.
+
+\subsubsection{Gestion de la cohérence des données}
+
+Le principe \textit{database per service} rend difficile le maintien de la cohérence des données entre services. Dans notre application, un virement qui échoue après le débit du compte source mais avant le crédit du compte cible pourrait laisser le système dans un état incohérent. Des patrons comme le \textit{Saga Pattern} ou l'\textit{Event Sourcing} seraient nécessaires en production pour gérer ces cas \cite{richardson2018}.
+
+\subsubsection{Coût d'infrastructure}
+
+Chaque microservice nécessite ses propres ressources (mémoire, CPU, stockage). Six instances JVM Spring Boot consomment significativement plus de ressources qu'une seule application monolithique équivalente. Le coût en infrastructure peut être prohibitif pour des petites équipes ou des startups en phase initiale.
+
+\subsubsection{Débogage difficile}
+
+Tracer une requête à travers plusieurs services est considérablement plus complexe que dans un monolithe. Sans outils de traçage distribué comme Zipkin ou Jaeger, il est difficile de suivre le cheminement d'une requête et d'identifier la source d'une erreur. Notre application s'appuie sur les logs de chaque service, ce qui peut s'avérer insuffisant dans un environnement de production à grande échelle.
+
+\subsubsection{Surcharge pour les petits projets}
+
+Pour des projets de petite taille ou des prototypes, l'architecture microservices est souvent disproportionnée. La complexité ajoutée (réseau, découverte de services, gestion des pannes distribuées) n'est pas justifiée si le système peut tenir dans un monolithe bien structuré. Martin Fowler recommande de commencer par un monolithe et de migrer vers les microservices uniquement lorsque la complexité le justifie \cite{fowler2015}.
+
+\subsection{Quand utiliser les microservices~?}
+
+\subsubsection{Cas favorables}
+
+L'architecture microservices est recommandée dans les situations suivantes :
+\begin{itemize}
+    \item \textbf{Applications à grande échelle} nécessitant une scalabilité différenciée par composant ;
+    \item \textbf{Équipes nombreuses} travaillant en parallèle sur des domaines fonctionnels distincts ;
+    \item \textbf{Systèmes critiques} nécessitant une haute disponibilité et une isolation des pannes ;
+    \item \textbf{Organisations pratiquant le DevOps} avec des pipelines CI/CD matures ;
+    \item \textbf{Applications à évolution rapide} où des fonctionnalités doivent être déployées fréquemment et indépendamment.
+\end{itemize}
+
+\subsubsection{Cas défavorables}
+
+L'architecture microservices est déconseillée dans les cas suivants :
+\begin{itemize}
+    \item \textbf{Petites applications} avec peu de domaines fonctionnels ;
+    \item \textbf{Équipes réduites} (moins de 5 développeurs) sans expertise DevOps ;
+    \item \textbf{Prototypes ou MVP} où la rapidité de développement prime ;
+    \item \textbf{Systèmes à forte cohérence transactionnelle} nécessitant des transactions ACID inter-domaines ;
+    \item \textbf{Budget d'infrastructure limité}.
+\end{itemize}
+
+\subsubsection{Recommandations}
+
+À la lumière de notre expérience avec ce projet et de la littérature académique, nous formulons les recommandations suivantes :
+
+\begin{enumerate}
+    \item \textbf{Commencer simple} : démarrer par un monolithe bien structuré en couches, puis extraire les microservices lorsque la complexité le justifie (\textit{Monolith First} \cite{fowler2015}) ;
+    \item \textbf{Investir dans l'outillage} : l'adoption des microservices doit s'accompagner d'outils de monitoring (Prometheus, Grafana), de traçage distribué (Zipkin, Jaeger) et de gestion des logs centralisée (ELK Stack) ;
+    \item \textbf{Définir des interfaces claires} : les contrats d'API entre services doivent être documentés et versionnés (OpenAPI/Swagger) pour minimiser le couplage ;
+    \item \textbf{Automatiser tout} : CI/CD, tests, déploiement, monitoring --- l'automatisation est la clé de la réussite d'une architecture microservices dans l'esprit DevOps.
+\end{enumerate}
+
+% ============================================================
+% 5. CONCLUSION
+% ============================================================
+\section{Conclusion}
+
+Ce travail nous a permis d'explorer en profondeur l'architecture microservices, tant sur le plan théorique que pratique. À travers la conception et l'implémentation d'une application bancaire distribuée en six microservices, nous avons pu expérimenter concrètement les principes fondamentaux de cette approche architecturale.
+
+\textbf{Sur le plan théorique}, nous avons constaté que l'architecture microservices incarne les principes clés étudiés dans le cours d'architecture des applications d'entreprise :
+
+\begin{itemize}
+    \item La \textbf{modularité} se manifeste par la décomposition de l'application en services autonomes, chacun encapsulant un domaine métier cohérent ;
+    \item Le \textbf{couplage faible} est assuré par la communication via des API REST bien définies et la découverte dynamique des services via Eureka ;
+    \item Les \textbf{couches architecturales} sont respectées au sein de chaque service (Controller, Service, Repository, Model), conformément au patron \textit{Layered Architecture} ;
+    \item Les \textbf{patrons architecturaux} comme l'API Gateway, le Service Registry, et le Database per Service illustrent des solutions éprouvées aux problèmes récurrents des systèmes distribués.
+\end{itemize}
+
+\textbf{Sur le plan pratique}, la réalisation de ce projet nous a confrontés aux défis réels de l'architecture microservices : la gestion des dépendances de démarrage entre services, la communication inter-services fiable via OpenFeign, la conteneurisation avec Docker, et l'orchestration avec Docker Compose. Ces défis nous ont permis de comprendre pourquoi l'adoption des microservices doit être une décision mûrement réfléchie, en fonction de la taille du projet, de l'équipe et des besoins de scalabilité.
+
+En définitive, l'architecture microservices, couplée à la méthode DevOps, représente une approche puissante pour le développement d'applications d'entreprise modernes. Cependant, elle n'est pas une solution universelle et doit être adoptée en connaissance de ses implications en termes de complexité opérationnelle et de coûts d'infrastructure.
+
+% ============================================================
+% RÉFÉRENCES
+% ============================================================
+\newpage
+\section{Références bibliographiques}
+
+\begin{thebibliography}{99}
+
+\bibitem{fowler2014}
+Fowler, M. et Lewis, J. (2014). \textit{Microservices: a definition of this new architectural term}. martinfowler.com. Repéré à \url{https://martinfowler.com/articles/microservices.html}
+
+\bibitem{newman2021}
+Newman, S. (2021). \textit{Building Microservices: Designing Fine-Grained Systems} (2e éd.). O'Reilly Media.
+
+\bibitem{richardson2018}
+Richardson, C. (2018). \textit{Microservices Patterns: With Examples in Java}. Manning Publications.
+
+\bibitem{evans2003}
+Evans, E. (2003). \textit{Domain-Driven Design: Tackling Complexity in the Heart of Software}. Addison-Wesley.
+
+\bibitem{fowler2015}
+Fowler, M. (2015). \textit{MonolithFirst}. martinfowler.com. Repéré à \url{https://martinfowler.com/bliki/MonolithFirst.html}
+
+\bibitem{humble2010}
+Humble, J. et Farley, D. (2010). \textit{Continuous Delivery: Reliable Software Releases through Build, Test, and Deployment Automation}. Addison-Wesley.
+
+\bibitem{nygard2018}
+Nygard, M. T. (2018). \textit{Release It!: Design and Deploy Production-Ready Software} (2e éd.). Pragmatic Bookshelf.
+
+\bibitem{martin2017}
+Martin, R. C. (2017). \textit{Clean Architecture: A Craftsman's Guide to Software Structure and Design}. Prentice Hall.
+
+\bibitem{conway1968}
+Conway, M. E. (1968). How do committees invent? \textit{Datamation}, 14(4), 28--31.
+
+\bibitem{springcloud2024}
+Spring Cloud. (2024). \textit{Spring Cloud Documentation}. Repéré à \url{https://spring.io/projects/spring-cloud}
+
+\end{thebibliography}
+
+\end{document}
